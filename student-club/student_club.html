@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Club Membership</title>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <style>
+
+        .selected {
+            text-decoration: line-through ;
+            font-style: italic;
+            color: grey;
+        }
+
+        input {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 5px 5px 0px;
+            box-sizing: border-box;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div id="app">
+    <h1>Student Club Roster</h1>
+
+    <h2>Add Students</h2>
+
+    <label for="student-name">Student Name</label>
+    <input v-model="newStudentName" id="student-name" name="student-name">
+
+    <br>
+
+    <label for="student-id">Student ID</label>
+    <input v-model="newStudentID" id="student-id" name="student-id">
+
+    <br>
+
+    <label for="student-gpa">Student GPA</label>
+    <input v-model="newStudentGpa" id="student-gpa" name="student-gpa" type="number">
+
+    <br>
+
+    <button v-on:click="addNewStudent" id="add-student">Add Student</button>
+
+    <h2>Student List</h2>
+
+    <p>There is/are
+        <span id="student-count">
+        {{studentCount}}
+        </span>
+        student(s) in the club.</p>
+
+
+    <ul id="student-list">
+        <!-- will add a new li for every student in the studentList and display name, id, and GPA -->
+        <li v-for="student in studentList" v-on:click="selectOrUnselectStudent(student)" v-bind:class="{selected: student.selected }">
+
+            {{student.studentName}}, ID: {{student.studentID}}, GPA {{student.studentGpa}}
+        </li>
+    </ul>
+
+    <!-- A button to remove the students that are currently selected -->
+    <button v-on:click="removeSelectedStudents" id="remove-selected-students">Remove selected students</button>
+
+</div>  <!-- end of div#app -->
+
+<script>
+
+    const { createApp, ref, computed } = Vue; // make Vue concepts available to this file
+
+    createApp({
+        setup() {
+            // the list of students that will be shown in the page
+            const studentList = ref([
+                {studentName: 'Sarah', studentID: 'sarahr444', studentGpa: 3.2, selected: false},
+                {studentName: 'John', studentID: 'johnn328', studentGpa: 0.4, selected: false},
+            ]);
+
+            // this links to the studentName input with v-model
+            const newStudentName = ref('');
+            // this links to the studentID input with v-model
+            const newStudentID = ref('');
+            // this links to the studentGpa input with v-model
+            const newStudentGpa = ref('');
+
+            // Use this for form validation
+            const errors = ref([]);
+
+            // adds the new student to the studentList using the values of newStudentName, newStudentID,
+            // and newStudentGpa
+            // does validation on the input to check for errors first and displays a message containing the errors
+            // if it fails
+            const addNewStudent = () => {
+                // resetting the errors array
+                errors.value = [];
+
+                if (newStudentName.value.length === 0) errors.value.push('You must enter a student name');
+
+                if (newStudentID.value.length === 0) errors.value.push('You must enter a student ID');
+
+                if (newStudentGpa.value.length === 0) {
+                    errors.value.push('You must enter a student GPA');
+                } else if (!(newStudentGpa.value <= 4 && newStudentGpa.value >= 0)) {
+                    errors.value.push('The student GPA must be between 0 and 4')
+                }
+
+                if (errors.value.length > 0) {
+                    alert(errors.value.join('\n'))
+                } else {
+                    const newStudent = {
+                        studentName: newStudentName.value,
+                        studentID: newStudentID.value,
+                        studentGpa: newStudentGpa.value,
+                        selected: false
+                    }
+
+                    studentList.value.push(newStudent);
+
+                    // resetting all the input values
+                    newStudentName.value = '';
+                    newStudentID.value = '';
+                    newStudentGpa.value = '';
+                }
+            }
+
+            // computed property to get the number of students in the studentList
+            const studentCount = computed(() => studentList.value.length);
+
+            // removes the students from the studentList where the selected property is true
+            const removeSelectedStudents = () => {
+                studentList.value = studentList.value.filter((student) => !student.selected)
+            }
+
+            // If the selected property is true, it is changed to false.
+            // if the selected property is false, it is changed to true.
+            const selectOrUnselectStudent = (student) => {
+                student.selected = !student.selected
+            }
+
+            return {
+                newStudentName,
+                newStudentID,
+                newStudentGpa,
+                studentList,
+                addNewStudent,
+                selectOrUnselectStudent,
+                removeSelectedStudents,
+                studentCount
+            }
+        }
+    }).mount('#app')  // connect to the HTML in the div #app - all the html for this page
+
+
+</script>
+
+</body>
+</html>

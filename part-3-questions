@@ -1,0 +1,7 @@
+I biggest difference I noticed when comparing the page in this lab to the page I created in week 4 is not having to deal
+with dom elements in our javascript code. It makes writing our javascript code much simpler. Another difference I
+noticed in this page was the ability to reference variables created in our javascript code in the html of our page.
+
+If I had to choose between coding this page using Vue.js or just vanilla JavaScript I would honestly just do vanilla
+JavaScript. I can see how Vue could be a life-saver on a larger scale webpage, but for a webpage of this size I don't
+think it is really necessary.
